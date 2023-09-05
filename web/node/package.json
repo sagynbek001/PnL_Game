@@ -1,0 +1,19 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "Pnl node app",
+  "scripts": {
+    "start": "node ./base/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "convict": "6.2.2",
+    "express": "4.17.3",
+    "lodash": "4.17.21"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "8.14.0",
+    "eslint-plugin-lodash": "7.4.0"
+  }
+}

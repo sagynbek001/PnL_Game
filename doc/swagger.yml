@@ -1,0 +1,852 @@
+openapi: 3.0.3
+info:
+  description: This is a sample PNL server
+  version: 1.0.1
+  title: PNL
+servers:
+  - url: http://localhost:8081/api
+    description: Local server (uses live data)
+paths:
+  /v1/singin:
+    post:
+      tags:
+        - auth
+      summary: User login into the system
+      description: Method allows to user login
+      operationId: singin
+      requestBody:
+        description: Login request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginData'
+      responses:
+        '200':
+          description: Successful authorization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: Invalid login/password supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Login not found/Invalid password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/refreshtoken:
+    post:
+      tags:
+        - auth
+      summary: Validate RefreshToken
+      description: Method allows to validate token
+      operationId: refreshtoken
+      requestBody:
+        description: Capture object that needs to be validated in the system
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+      responses:
+        '200':
+          description: Successful authorization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: Login not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/singup:
+    post:
+      tags:
+        - auth
+      summary: Logs user into the system
+      description: Method allows to authorization user
+      operationId: singup
+      requestBody:
+        description: Login request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginData'
+      responses:
+        '200':
+          description: Successful authorization
+        '400':
+          description: Invalid login/password supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Login not found/Invalid password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/admin/scenarios:
+    get:
+      tags:
+        - scenarios
+      summary: Get all scenarios for admin
+      description: Method allows to get all scenarios
+      operationId: getScenariosForAdmin
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayScenario'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - scenarios
+      summary: Create scenario
+      description: Method allows to create scenario
+      operationId: postScenario
+      requestBody:
+        description: Request body to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+      responses:
+        '201':
+          description: Successful
+        '400':
+          description: Invalid scenario struct supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/admin/scenarios/{id}:
+    delete:
+      tags:
+        - scenarios
+      summary: Delete scenario by ID
+      description: Method allows to delete scenario by ID
+      operationId: deleteByID
+      parameters:
+        - name: id
+          in: path
+          description: unique id of scenario
+          required: true
+          schema:
+            type: integer
+          explode: true
+      responses:
+        '200':
+          description: Successful
+        '400':
+          description: Invalid scenario ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/trainer/scenarios:
+    get:
+      tags:
+        - scenarios
+      summary: Get all scenarios for trainer
+      description: Method allows to get all scenarios
+      operationId: getScenariosForTrainer
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayScenario'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/trainer/scenarios/{id}:
+    get:
+      tags:
+        - scenarios
+      summary: Get scenario by ID
+      description: Method allows to get scenario by ID
+      operationId: getScenarioByIDForTrainer
+      parameters:
+        - name: id
+          in: path
+          description: unique id of scenario
+          required: true
+          schema:
+            type: integer
+          explode: true
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+        '400':
+          description: Invalid scenario ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/trainer/users:
+    get:
+      tags:
+        - users
+      summary: Get all users for trainer
+      description: Method allows to get all users
+      operationId: getUsersForTrainer
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/trainer/simulations:
+    get:
+      tags:
+        - simulations
+      summary: Get all simulations for trainer
+      description: Method allows to get all simulations
+      operationId: getSimulationsForTrainer
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulationForTrainer'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - simulations
+      summary: Create simulation
+      description: Method allows to create simulation
+      operationId: postSimulations
+      requestBody:
+        description: Request body to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimulationReq'
+      responses:
+        '201':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulationResp'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/trainer/simulations/{id}/next_step:
+    post:
+      tags:
+        - simulations
+      summary: Next step
+      description: Method allows to go to the next step
+      operationId: postSimulationNextStep
+      parameters:
+        - name: id
+          in: path
+          description: unique id of simulation
+          required: true
+          schema:
+            type: integer
+          explode: true
+      responses:
+        '201':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Step'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/trainer/simulations/{simulation_id}/steps/{step_id}/managers:
+    get:
+      tags:
+        - simulations
+      summary: Get managers data by stepID
+      description: Method allows to get managers data in simulation step
+      operationId: getManagersDataInSimulationStep
+      parameters:
+        - name: simulation_id
+          in: path
+          description: unique id of simulation
+          required: true
+          schema:
+            type: integer
+          explode: true
+        - name: step_id
+          in: path
+          description: unique id of step
+          required: true
+          schema:
+            type: integer
+          explode: true
+      responses:
+        '200':
+          description: Successful
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/trainer/simulations/{simulation_id}/managers/{manager_id}:
+    put:
+      tags:
+        - simulations
+      summary: Update manager by ID
+      description: Method allows to update manager be ID in simulation
+      operationId: putManagerByIDInSimulation
+      parameters:
+        - name: simulation_id
+          in: path
+          description: unique id of simulation
+          required: true
+          schema:
+            type: integer
+          explode: true
+        - name: manager_id
+          in: path
+          description: unique id of manager
+          required: true
+          schema:
+            type: integer
+          explode: true
+      responses:
+        '200':
+          description: Successful
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/player/simulations:
+    get:
+      tags:
+        - simulations
+      summary: Get all simulations for player
+      description: Method allows to get all simulations
+      operationId: getSimulationsForPlayer
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulationForPlayer'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/player/simulations/{id}:
+    get:
+      tags:
+        - simulations
+      summary: Get simulation by ID
+      description: Method allows to get simulation by ID
+      operationId: getSimulationByIDForPlayer
+      parameters:
+        - name: id
+          in: path
+          description: unique id of scenario
+          required: true
+          schema:
+            type: integer
+          explode: true
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulationForPlayer'
+        '400':
+          description: Invalid scenario ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/player/simulations/{simulation_id}/steps/{steps_id}/managers/{manager_id}:
+    get:
+      tags:
+        - simulations
+      summary: Get manager by ID
+      description: Method allows to get manager ID in simulation
+      operationId: getManagerByIDInSimulation
+      parameters:
+        - name: simulation_id
+          in: path
+          description: unique id of simulation
+          required: true
+          schema:
+            type: integer
+          explode: true
+        - name: steps_id
+          in: path
+          description: unique id of step
+          required: true
+          schema:
+            type: integer
+          explode: true
+        - name: manager_id
+          in: path
+          description: unique id of manager
+          required: true
+          schema:
+            type: integer
+          explode: true
+      responses:
+        '200':
+          description: Successful
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/player/simulations/{simulation_id}/steps/{steps_id}/managers/{manager_id}/employees:
+    post:
+      tags:
+        - simulations
+      summary: Fix employees
+      description: Method allows to fix employees on step
+      operationId: postSimulationFixEmployee
+      parameters:
+        - name: simulation_id
+          in: path
+          description: unique id of simulation
+          required: true
+          schema:
+            type: integer
+          explode: true
+        - name: steps_id
+          in: path
+          description: unique id of step
+          required: true
+          schema:
+            type: integer
+          explode: true
+        - name: manager_id
+          in: path
+          description: unique id of manager
+          required: true
+          schema:
+            type: integer
+          explode: true
+      responses:
+        '201':
+          description: Successful
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    LoginData:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          description: user login
+          example: example@gmail.com
+        password:
+          type: string
+          description: user password
+          example: 123qwe
+    Token:
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+      properties:
+        accessToken:
+          type: string
+          description: access token
+          example: ey1NiIsIn
+        refreshToken:
+          type: string
+          description: refresh token
+          example: pSjkuWmd
+    Error:
+      type: object
+      description: Generic error response
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          required:
+            - code
+          properties:
+            code:
+              type: integer
+              format: int32
+              description: The HTTP status code
+              nullable: false
+              example: '500'
+            message:
+              type: string
+              description: The error message
+              example: Internal server error
+          example:
+            data:
+              code: 500
+              message: Internal server error
+    Scenario:
+      type: object
+      required:
+        - ownerID
+        - name
+        - stepsCount
+        - deletedAt
+        - data
+      properties:
+        ownerID:
+          type: integer
+        name:
+          type: string
+          description: name scenario
+        stepsCount:
+          type: integer
+          description: steps count in scenario
+        deletedAt:
+          type: string
+          description: scenario deletion date
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScenarioData'
+    ArrayScenario:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Scenario'
+    ScenarioData:
+      type: object
+      required:
+        - managers
+        - projects
+      properties:
+        managers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Manager'
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+    Manager:
+      type: object
+      required:
+        - id
+        - name
+        - userID
+        - employees
+        - events
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        userID:
+          type: integer
+        employees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    Project:
+      type: object
+      required:
+        - id
+        - name
+        - rates
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        rates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Rate'
+    Rate:
+      type: object
+      required:
+        - id
+        - projectID
+        - type
+        - seniority
+        - rate
+        - illCompensation
+        - vacationCompensation
+      properties:
+        id:
+          type: integer
+        projectID:
+          type: integer
+        type:
+          type: string
+          description: employee type (for example A1, A2, B1)
+        seniority:
+          type: integer
+        rate:
+          type: number
+          description: rate per worker
+        illCompensation:
+          type: number
+          description: sickness benefit
+        vacationCompensation:
+          type: number
+          description: vacation pay
+    Employee:
+      type: object
+      required:
+        - id
+        - name
+        - seniority
+        - salary
+        - projectID
+        - employeeStatus
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        seniority:
+          type: integer
+        salary:
+          type: number
+        projectID:
+          type: integer
+        employeeStatus:
+          type: string
+          description: 'for example: on bench, vacation, ill'
+    Event:
+      type: object
+      required:
+        - id
+        - eventTypeID
+        - name
+        - description
+      properties:
+        id:
+          type: integer
+        eventTypeID:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+    User:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          login:
+            type: string
+    Step:
+      type: object
+      required:
+        - id
+        - simulationID
+        - data
+      properties:
+        id:
+          type: integer
+        simulationID:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScenarioData'
+    SimulationForTrainer:
+      type: array
+      items:
+        type: object
+        properties:
+          stepID:
+            type: integer
+          name:
+            type: string
+            description: Simulation name
+          totalSteps:
+            type: integer
+          manager:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+    SimulationReq:
+      type: object
+      required:
+        - scenarioID
+        - name
+        - assignments
+      properties:
+        scenarioID:
+          type: integer
+        name:
+          type: string
+          description: Simulation name
+        assignments:
+          type: array
+          items:
+            type: object
+            properties:
+              managerID:
+                type: integer
+              userID:
+                type: integer
+    SimulationResp:
+      type: object
+      required:
+        - simulationID
+        - stepID
+        - name
+        - data
+      properties:
+        simulationID:
+          type: integer
+        stepID:
+          type: integer
+        name:
+          type: string
+          description: Simulation name
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScenarioData'
+    SimulationForPlayer:
+      type: array
+      items:
+        type: object
+        properties:
+          stepID:
+            type: integer
+          name:
+            type: string
+            description: Simulation name
+          totalSteps:
+            type: integer
+          manager:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string

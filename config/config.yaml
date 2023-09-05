@@ -1,0 +1,7 @@
+db:
+ user: "user"
+ password: "mypassword"
+ host: "localhost"
+ port: 5432
+ name: "pnl_db"
+ type: "postgres"

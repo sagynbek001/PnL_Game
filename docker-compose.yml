@@ -1,0 +1,48 @@
+# Specify the version for docker-compose.yml
+version: "3.8"
+
+# add the serivces needed (postgres,go)
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: mypassword
+      # Optional: Give a name to the database, otherwise
+      # use the default value POSTGRES_USER as a database name (user in this case.)
+      POSTGRES_DB: pnl_db
+    ports:
+      - "5432:5432"
+
+  pnl_test:
+    container_name: pnl_test
+    image: golang:latest
+    working_dir: /go/src/pnl
+    volumes:
+      - './:/go/src/pnl'
+    command: ["./wait-for-it/wait-for-it.sh", "db:5432", "--", "make", "unit-tests"]
+    environment:
+      DB_HOST: postgres
+    depends_on:
+      - "postgres"
+
+  pnl:
+    build: ./
+    command: ["./wait-for-it/wait-for-it.sh", "db:5432", "--", "./main"]
+    environment:
+      DB_HOST: postgres
+    ports: 
+      - 8080:8080
+    depends_on:
+      - "postgres"
+  
+  swagger:
+    container_name: swagger
+    image: swaggerapi/swagger-ui
+    ports:
+      - 8081:8080
+    environment:
+      - SWAGGER_JSON=/doc/swagger.yml
+    volumes:
+      - ./doc:/doc:ro

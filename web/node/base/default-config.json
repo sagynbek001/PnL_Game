@@ -1,0 +1,13 @@
+{
+	"app_key": "pnl",
+	"app": {
+		"port": 3001
+	},
+	"rest_host_config": {
+		"pnl": {
+			"backend_context": "pnl",
+			"host": "127.0.0.1",
+			"port": 8080
+		}
+	}
+}
